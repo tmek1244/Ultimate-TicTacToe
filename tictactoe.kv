@@ -1,0 +1,214 @@
+#:kivy 1.11.0
+#:import Window kivy.core.window.Window
+
+<MyButton@Button>:
+	border: (1, 1, 1, 1)
+	Image:
+		source: "assets/T.png"
+		x: self.parent.x
+		y: self.parent.y
+    	size: self.parent.size
+
+<Manager>:
+	id: screen_manager
+
+	menu: screen_menu
+	gameOffline: screen_game_offline
+	gameOnline: screen_game_online
+
+	Menu:
+		id: screen_menu
+		name: "screen1"
+		manager: screen_manager
+
+	GameOffline:
+		id: screen_game_offline
+		name: "screen2"
+		manager: screen_manager
+	
+	GameOnline:
+		id: screen_game_online
+		name: "screen3"
+		manager: screen_manager
+
+<Menu>:
+	BoxLayout:
+		orientation: "vertical"
+		
+		spacing: 20
+		padding: 20
+
+		canvas:
+			Color:
+				rgb: .3, .3, .77
+			Rectangle:
+				pos: self.pos
+				size: self.size
+
+		Label:
+			size_hint_y: .2
+			font_size: 34
+			text: "Main menu"
+		Label:
+			text: ""
+
+		Button:
+			size_hint_x: .8
+			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+			text: "Game 1 vs 1 Offline"
+			on_release:
+				root.manager.current = "screen2"
+		Button:
+			size_hint_x: .8
+			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+			text: "Game 1 vs 1 Online //TODO"
+			on_release:
+				root.connectToServer()
+				#root.manager.current = "screen3"
+		Button:
+			size_hint_x: .8
+			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+			text: "Connection stop"
+			#on_release:
+			#	root.przerwij()
+		Button:
+			text: "Leave the game"
+			size_hint_x: .8
+			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+			on_release:
+				root.killThread()
+				app.stop()
+
+
+
+<GameOffline>:	
+	BoxLayout:
+		id: calosc
+		orientation: 'vertical' if Window.size[1] > Window.size[0] else 'horizontal'
+		Label:
+			id: granica
+			text: ""
+			height: 0
+			size_hint_x: 0.000001
+		BigBoard:
+			id: gra
+			pos_hint: {'left': .5, 'center_y': 0.5}
+		PasekBoczny:
+			id: pasek
+			
+<PasekBoczny>:
+	BoxLayout:
+		spacing: 10
+		padding: 10
+		id: menuWGrze
+		orientation: 'horizontal' if Window.size[1] > Window.size[0] else 'vertical'
+		Button:
+			text: "menu"
+			on_release:
+				root.reset()
+				root.goTo(1)
+		Label:
+			text: "czas gry\n" + root.timeInGame
+		Button:
+			text: "reset"
+			on_release: 
+				root.reset()	
+		Label:
+			id: whosplaying
+			text: "cos"
+
+<GameOnline>:
+	BoxLayout:
+		id: calosc
+		orientation: 'vertical' if Window.size[1] > Window.size[0] else 'horizontal'
+		Label:
+			id: granica
+			text: ""
+			height: 0
+			size_hint_x: 0.000001
+		BigBoard:
+			id: gra
+			pos_hint: {'left': .5, 'center_y': 0.5}
+		PasekBoczny:
+			id: pasek
+
+<BigBoard>:
+	cols: 3
+	padding:  min(Window.size[1],Window.size[0])/100
+	spacing:  min(Window.size[1],Window.size[0])/100
+	height: min(Window.size[1],Window.size[0])
+	size_hint_y: None
+	size_hint_x: None
+	width: min(Window.size[1],Window.size[0])
+	
+	
+	
+	TicTacToeGrid:
+		coords: 0
+	TicTacToeGrid:
+		coords: 1
+	TicTacToeGrid:
+		coords: 2
+
+	TicTacToeGrid:
+		coords: 3
+	TicTacToeGrid:
+		coords: 4
+	TicTacToeGrid:
+		coords: 5
+	
+	TicTacToeGrid:
+		coords: 6
+	TicTacToeGrid:
+		coords: 7
+	TicTacToeGrid:
+		coords: 8
+
+<TicTacToeGrid>:
+	cols: 3
+	padding:  min(Window.size[1],Window.size[0])/100
+	spacing:  min(Window.size[1],Window.size[0])/100
+
+
+	whoWin: 0
+
+	canvas:
+		Color:
+			rgb: root.r, root.g, root.b
+		Rectangle:
+			id: cos
+			pos: self.pos
+			size: self.size
+
+	MyButton:
+		id: cos1
+		coords: 0
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 1
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 2
+		on_release: root.button_pressed(self)
+
+
+	MyButton:
+		coords: 3
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 4
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 5
+		on_release: root.button_pressed(self)
+
+
+	MyButton:
+		coords: 6
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 7
+		on_release: root.button_pressed(self)
+	MyButton:
+		coords: 8
+		on_release: root.button_pressed(self)
