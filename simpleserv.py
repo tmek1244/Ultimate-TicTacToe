@@ -13,10 +13,9 @@ class GameServerProtocol(protocol.Protocol):
 
     def dataReceived(self, data):
         data = data.decode('ascii')
-        #print(data)
+        
         if data == "Close1":
             self.transport.write("leave".encode('ascii'))
-            #self.factory.lookingForOpponent.remove(self)
             return
         if data == "reset" or data == "yes" or data == "no":
             print("reset: ",data) 
@@ -38,8 +37,6 @@ class GameServerProtocol(protocol.Protocol):
                     self.transport.write("leave".encode('ascii'))
                 else:
                     self.opponent.transport.write(data.encode('ascii'))
-            #print("self: ",self)
-            #print("opponent: ",self.opponent)
 
     def connectionLost(self, reason):
         try:
