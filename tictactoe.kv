@@ -1,5 +1,6 @@
 #:kivy 1.11.0
 #:import Window kivy.core.window.Window
+#:import Image kivy.uix.image
 
 <MyButton@Button>:
 	border: (1, 1, 1, 1)
@@ -61,25 +62,15 @@
 		Button:
 			size_hint_x: .8
 			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-			text: "Game 1 vs 1 Online //TODO"
+			text: "Game 1 vs 1 Online"
 			on_release:
 				root.connectToServer()
-				#root.manager.current = "screen3"
-		Button:
-			size_hint_x: .8
-			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-			text: "Connection stop"
-			#on_release:
-			#	root.przerwij()
 		Button:
 			text: "Leave the game"
 			size_hint_x: .8
 			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 			on_release:
-				root.killThread()
 				app.stop()
-
-
 
 <GameOffline>:	
 	BoxLayout:
@@ -105,6 +96,7 @@
 		Button:
 			text: "menu"
 			on_release:
+				root.disconnect()
 				root.reset()
 				root.goTo(1)
 		Label:
@@ -112,10 +104,11 @@
 		Button:
 			text: "reset"
 			on_release: 
-				root.reset()	
-		Label:
-			id: whosplaying
-			text: "cos"
+				root.reset()
+		Button:
+			id: whos_playing
+			background_normal: root.background_image
+			background_down: root.background_image
 
 <GameOnline>:
 	BoxLayout:
@@ -140,8 +133,6 @@
 	size_hint_y: None
 	size_hint_x: None
 	width: min(Window.size[1],Window.size[0])
-	
-	
 	
 	TicTacToeGrid:
 		coords: 0
@@ -169,16 +160,15 @@
 	padding:  min(Window.size[1],Window.size[0])/100
 	spacing:  min(Window.size[1],Window.size[0])/100
 
-
 	whoWin: 0
 
 	canvas:
 		Color:
 			rgb: root.r, root.g, root.b
 		Rectangle:
-			id: cos
 			pos: self.pos
 			size: self.size
+			source: root.background_image
 
 	MyButton:
 		id: cos1
