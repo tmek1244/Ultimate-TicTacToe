@@ -1,3 +1,5 @@
+import random
+
 from twisted.internet import reactor, protocol
 from twisted.protocols.basic import LineReceiver
 from twisted.internet.protocol import Factory
@@ -13,13 +15,11 @@ class GameServerProtocol(protocol.Protocol):
 
     def dataReceived(self, data):
         data = data.decode('ascii')
-        #print(data)
+
         if data == "Close1":
             self.transport.write("leave".encode('ascii'))
-            #self.factory.lookingForOpponent.remove(self)
             return
         if data == "reset" or data == "yes" or data == "no":
-            print("reset: ",data) 
             data = data.encode('ascii')
             self.opponent.transport.write(data)
         else:
@@ -29,27 +29,28 @@ class GameServerProtocol(protocol.Protocol):
                 elif self not in self.factory.lookingForOpponent:
                     self.opponent = self.factory.lookingForOpponent.pop()
                     self.opponent.opponent = self
-                    self.transport.write("-1".encode('ascii'))
-                    self.opponent.transport.write("1".encode('ascii'))
+                    if random.randint(0, 1) == 1:
+                        self.transport.write("-1".encode('ascii'))
+                        self.opponent.transport.write("1".encode('ascii'))
+                    else:
+                        self.transport.write("1".encode('ascii'))
+                        self.opponent.transport.write("-1".encode('ascii'))
+                        
                     self.is_playing = True
                     self.opponent.is_playing = True
             else:
-                if self.opponent == "niema":
+                if self.opponent == "left":
                     self.transport.write("leave".encode('ascii'))
                 else:
-                    self.opponent.transport.write(data.encode('ascii'))
-            #print("self: ",self)
-            #print("opponent: ",self.opponent)
+                    self.opponent.transport.write(data.encode('ascii'))       
 
     def connectionLost(self, reason):
         try:
             self.factory.lookingForOpponent.remove(self)
-            print("wyszedl")
         except:
             try:
                 self.opponent.transport.write("leave".encode('ascii'))
-                self.opponent.opponent = "niema"
-                print("wyszedl1")
+                self.opponent.opponent = "left"
             except:
                 pass
 
