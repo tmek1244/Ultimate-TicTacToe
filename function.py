@@ -75,7 +75,7 @@ def changeToGame(who_am_I):
     App.get_running_app().clock_timer = Clock.schedule_interval(partial(timer, "online"), 1.000)
 
 def changeButton(data):
-    colors = {1: 'assets/X.png', -1: 'assets/O.png', 6: 'assets/draw.png'}
+    colors = {1: 'assets/X.png', -1: 'assets/O.png'}
     x = (child for child in App.get_running_app().getMan().gameOnline.ids.gra.children if child.coords == (int)(data[0]))
     for child in x:
         for butt in child.children:
