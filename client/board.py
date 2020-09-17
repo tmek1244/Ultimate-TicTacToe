@@ -2,19 +2,19 @@ from functools import partial
 
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
-from kivy.uix.screenmanager import ScreenManager, Screen
-from kivy.properties import ListProperty, NumericProperty, ObjectProperty, StringProperty
+from kivy.uix.screenmanager import Screen
+from kivy.properties import ListProperty, NumericProperty, StringProperty
 from kivy.clock import Clock
 from kivy.uix.label import Label
-from kivy.graphics import Rectangle
 from kivy.uix.modalview import ModalView
 
-import function
+from client import function
+
 
 class BigBoard(GridLayout, Screen):
     status = [0, 0, 0, 0, 0, 0, 0, 0, 0]
     current_player = -1
-    where =  -1
+    where = -1
     SecTime = "00"
     MinTime = "00"
     clockTimer = False
@@ -22,10 +22,10 @@ class BigBoard(GridLayout, Screen):
 
     time = MinTime + ' : ' + SecTime		
 
-    def on_status(self, coords, whoWin):
-        BigBoard.status[coords] = whoWin    
+    def on_status(self, coords, who_win):
+        BigBoard.status[coords] = who_win
 
-        win = function.ifSbWin(BigBoard.status)
+        win = function.if_sb_win(BigBoard.status)
         winner = ''
         if win == 1:
             winner = "X win!"
@@ -43,8 +43,8 @@ class BigBoard(GridLayout, Screen):
             self.parent.parent.parent.ids.pasek.reset(1)
             BigBoard.are_we_playing = False
 
-class TicTacToeGrid(GridLayout):
 
+class TicTacToeGrid(GridLayout):
     status = ListProperty([0, 0, 0,
                            0, 0, 0,
                            0, 0, 0])
@@ -62,10 +62,10 @@ class TicTacToeGrid(GridLayout):
         BigBoard.are_we_playing = True
         if ((self.coords == BigBoard.where or BigBoard.where == -1) and
             not self.status[button.coords] and self.still_playing
-            and (int(App.get_running_app().getMan().who_am_I) == int(BigBoard.current_player)
-            or not App.get_running_app().getMan().if_online)):
+            and (int(App.get_running_app().get_man().who_am_I) == int(BigBoard.current_player)
+                 or not App.get_running_app().get_man().if_online)):
 
-            if BigBoard.where == -1 and App.get_running_app().getMan().if_online == False:
+            if BigBoard.where == -1 and App.get_running_app().get_man().if_online == False:
                 BigBoard.clockTimer = True
                 App.get_running_app().clock_timer = Clock.schedule_interval(partial(function.timer, "offline"), 1.000)
 
@@ -75,7 +75,7 @@ class TicTacToeGrid(GridLayout):
             self.status[button.coords] = BigBoard.current_player
             BigBoard.where = button.coords
             
-            if App.get_running_app().getMan().if_online:
+            if App.get_running_app().get_man().if_online:
                 data = str(self.coords) + str(button.coords)
                 App.get_running_app().s.send_move(data.encode('ascii'))
             else:
@@ -91,14 +91,14 @@ class TicTacToeGrid(GridLayout):
             self.b = .5
 
             if BigBoard.are_we_playing:
-                function.changeColor(BigBoard.where, self.parent, 'red')
+                function.change_color(BigBoard.where, self.parent, 'red')
             else:
                 BigBoard.where = -1
 
     def on_status(self, instance, new_value):
         status = new_value
 
-        winner = function.ifSbWin(status)
+        winner = function.if_sb_win(status)
 
         if winner:
             for child in self.children:

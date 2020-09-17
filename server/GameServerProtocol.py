@@ -1,24 +1,23 @@
-from twisted.internet import reactor, protocol
-from twisted.protocols.basic import LineReceiver
-from twisted.internet.protocol import Factory
+from twisted.internet import protocol
+
 
 class GameServerProtocol(protocol.Protocol):
-    def __init__(self,factory):
+    def __init__(self, factory):
         self.factory = factory
         self.is_playing = False
         self.opponent = None
- 
+
     def connectionMade(self):
-        self.factory.ile += 1
+        self.factory.players += 1
 
     def dataReceived(self, data):
         data = data.decode('ascii')
-        
+
         if data == "Close1":
             self.transport.write("leave".encode('ascii'))
             return
         if data == "reset" or data == "yes" or data == "no":
-            print("reset: ",data) 
+            print("reset: ", data)
             data = data.encode('ascii')
             self.opponent.transport.write(data)
         else:
@@ -49,16 +48,3 @@ class GameServerProtocol(protocol.Protocol):
                 print("wyszedl1")
             except:
                 pass
-
-class GameServerFactory(Factory):
-    lookingForOpponent = []
-    ile = 0
-
-    def __init__(self):
-        print ("server is running...")
-    
-    def buildProtocol(self, addr):
-        return GameServerProtocol(self)
-
-reactor.listenTCP(8080, GameServerFactory())
-reactor.run()

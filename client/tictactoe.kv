@@ -1,4 +1,4 @@
-#:kivy 1.11.0
+#:kivy 1.11.1
 #:import Window kivy.core.window.Window
 #:import Image kivy.uix.image
 
@@ -64,7 +64,7 @@
 			pos_hint: {'center_x': 0.5, 'center_y': 0.5}
 			text: "Game 1 vs 1 Online"
 			on_release:
-				root.connectToServer()
+				root.connect_to_server()
 		Button:
 			text: "Leave the game"
 			size_hint_x: .8
@@ -84,10 +84,10 @@
 		BigBoard:
 			id: gra
 			pos_hint: {'left': .5, 'center_y': 0.5}
-		PasekBoczny:
+		SidePanel:
 			id: pasek
 			
-<PasekBoczny>:
+<SidePanel>:
 	BoxLayout:
 		spacing: 10
 		padding: 10
@@ -98,7 +98,7 @@
 			on_release:
 				root.disconnect()
 				root.reset()
-				root.goTo(1)
+				root.go_to(1)
 		Label:
 			text: "czas gry\n" + root.timeInGame
 		Button:
@@ -122,7 +122,7 @@
 		BigBoard:
 			id: gra
 			pos_hint: {'left': .5, 'center_y': 0.5}
-		PasekBoczny:
+		SidePanel:
 			id: pasek
 
 <BigBoard>:

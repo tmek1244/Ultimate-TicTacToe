@@ -1,18 +1,16 @@
 import threading
 import socket
-import time
-from pprint import pprint
 from kivy.app import App
 
-# from gameServerSocket import TicTacToeApp
-# from function import changeToGame, changeButton
-from function import changeToGame, changeButton
+from client.function import change_to_game, change_button
 
 HOST = 'localhost'
 PORT = 8080
 
+
 class ThreadedClient(threading.Thread):
     s = None
+
     def __init__(self):
         threading.Thread.__init__(self)
 
@@ -20,21 +18,21 @@ class ThreadedClient(threading.Thread):
         # print("function stop")
         self.s.send("Close1".encode('ascii'))
         self.s.close()
-    
+
     def reset(self):
         # print("function reset")
         self.s.send("reset".encode('ascii'))
 
     def send_answer_no(self, answer):
         self.s.send("no".encode('ascii'))
- 
+
     def send_answer_yes(self, answer):
         # print("function yes")
         self.s.send("yes".encode('ascii'))
-    
+
     def send_move(self, move):
         self.s.send(move)
- 
+
     def run(self):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.connect((HOST, PORT))
@@ -45,11 +43,11 @@ class ThreadedClient(threading.Thread):
         if data == "leave":
             self.s.close()
             return
-        App.get_running_app().setState("in_game")
-        App.get_running_app().getMan().menu.leave_queue_on_join()
-        changeToGame((int)(data))
+        App.get_running_app().set_state("in_game")
+        App.get_running_app().get_man().menu.leave_queue_on_join()
+        change_to_game(int(data))
 
-        while App.get_running_app().getState() == "in_game":
+        while App.get_running_app().get_state() == "in_game":
             data = self.s.recv(1024)
             data = data.decode('ascii')
 
@@ -72,6 +70,6 @@ class ThreadedClient(threading.Thread):
                 try:
                     App.get_running_app().man.ids.screen_game_online.ids.pasek.want_reset.dismiss()
                 except:
-                    pass                
+                    pass
             else:
-                changeButton(data)
+                change_button(data)
