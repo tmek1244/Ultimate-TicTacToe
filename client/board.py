@@ -55,7 +55,7 @@ class TicTacToeGrid(GridLayout):
     b = NumericProperty(.5)
     background_image = StringProperty('')
 
-    colors = {1: 'assets/X.png', -1: 'assets/O.png'}
+    colors = {1: 'assets/X.png', -1: 'assets/O.png', 6: 'assets/draw.png'}
     colorsGrey = {1: 'assets/XGrey.png', -1: 'assets/OGrey.png', 6: 'assets/drawGrey.png'}
 
     def button_pressed(self, button):
